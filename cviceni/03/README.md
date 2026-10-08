@@ -416,6 +416,7 @@ locate '*.conf' | head           # s vzorem (v uvozovkách!)
 ```bash
 touch ~/hledej_me.txt
 locate hledej_me                 # nic – databáze je stará
+find ~ -name 'hledej_me*'        # /home/sysadmin/hledej_me.txt – find hledá živě, najde ho hned
 sudo updatedb                    # aktualizace databáze (heslo netlab123); jinak běží 1× denně
 locate hledej_me                 # /home/sysadmin/hledej_me.txt
 ```
