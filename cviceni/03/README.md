@@ -1,5 +1,8 @@
 # Cvičení 03 – Práce se soubory, hledání a archivace
 
+> 📢 **Upozornění:** Příští týden, **čtvrtek 15. 10. 2026, cvičení ODPADÁ** – koná se
+> **Hackathon Královéhradeckého kraje**. Cvičení 04 bude až následující týden.
+
 Podle **NDG Linux Essentials** a labů **Linux I.**:
 
 - **Module 7 – Navigating the Filesystem**
