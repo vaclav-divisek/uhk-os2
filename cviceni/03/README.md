@@ -28,6 +28,34 @@ ls
 
 > Lab je **dočasný** – po jeho ukončení se vše smaže, takže se nemusíš bát experimentovat.
 
+### Co znamená `~` (tilda)
+
+`~` je **zkratka pro domovský adresář** přihlášeného uživatele. Shell ji před spuštěním příkazu nahradí skutečnou cestou (stejně jako rozbaluje `*`).
+
+| Zápis | Znamená | V NDG |
+|---|---|---|
+| `~` | můj domovský adresář | `/home/sysadmin` |
+| `~/cv03` | adresář `cv03` v mém domovském adresáři | `/home/sysadmin/cv03` |
+| `~root` | domovský adresář uživatele `root` | `/root` |
+| `~jmeno` | domovský adresář uživatele `jmeno` | `/home/jmeno` |
+
+```bash
+echo ~                  # /home/sysadmin
+echo $HOME              # totéž – hodnota proměnné HOME
+echo ~/cv03             # /home/sysadmin/cv03
+echo ~root              # /root
+cd /etc ; cd ~          # návrat domů (stejně jako samotné "cd")
+pwd
+```
+
+V promptu `sysadmin@localhost:~$` tilda říká, že **právě jsem ve svém domovském adresáři**.
+Po `cd /etc` se prompt změní na `sysadmin@localhost:/etc$`.
+
+> - `~` se rozbalí jen **na začátku slova** a **ne v uvozovkách**: `echo "~"` vypíše doslova `~`.
+>   V uvozovkách použij `"$HOME"`.
+> - Proč je to užitečné: `~/cv03` funguje odkudkoliv a pro každého uživatele vede do *jeho* domovského adresáře –
+>   nemusím psát celou cestu `/home/sysadmin/cv03`.
+
 ---
 
 # 1. File Globbing (zástupné znaky)
@@ -408,6 +436,57 @@ find ~/cv03 -name '*.csv' -ok rm {} \;          # jako -exec, ale ptá se
 ```
 
 > `{}` = nalezený soubor, `\;` = konec příkazu pro `-exec`.
+
+### `locate` vs. `find` – rozdíl v praxi
+
+| | `locate` | `find` |
+|---|---|---|
+| **Kde hledá** | v **databázi** (`/var/lib/plocate/…`), kterou plní `updatedb` | **přímo na disku**, adresář po adresáři |
+| **Rychlost** | okamžitě, i v celém systému | pomaleji, záleží na velikosti prohledávaného stromu |
+| **Aktuálnost** | jen stav z poslední aktualizace databáze (1× denně / `sudo updatedb`) | **vždy aktuální** |
+| **Podle čeho** | jen podle **jména / cesty** | jméno, typ, velikost, čas, vlastník, oprávnění… |
+| **Co umí s výsledkem** | jen vypsat | vypsat, smazat, spustit příkaz (`-exec`) |
+| **Kde** | vždy celý systém | jen ve stromu, který zadám (`find /etc …`) |
+
+**Příklad 1 – nově vytvořený soubor:**
+
+```bash
+touch ~/novy_report.txt
+
+locate novy_report        # NIC – soubor v databázi ještě není
+find ~ -name 'novy_report*'   # /home/sysadmin/novy_report.txt – find hledá živě
+
+sudo updatedb             # aktualizace databáze (heslo netlab123)
+locate novy_report        # /home/sysadmin/novy_report.txt – teď už ano
+```
+
+**Příklad 2 – smazaný soubor:**
+
+```bash
+rm ~/novy_report.txt
+
+find ~ -name 'novy_report*'   # nic – soubor opravdu neexistuje
+locate novy_report        # /home/sysadmin/novy_report.txt – databáze ho pořád „pamatuje"!
+locate -e novy_report     # -e: vypíše jen soubory, které ještě existují → nic
+```
+
+**Příklad 3 – rychlost:**
+
+```bash
+time locate '*.conf' | wc -l           # zlomek sekundy
+time find / -name '*.conf' 2>/dev/null | wc -l   # výrazně déle – prochází celý disk
+```
+
+**Příklad 4 – něco, co `locate` neumí vůbec:**
+
+```bash
+find ~ -mmin -10                  # změněné za posledních 10 minut
+find /var/log -size +1M           # větší než 1 MB
+find ~ -type d -empty             # prázdné adresáře
+```
+
+> **Shrnutí:** `locate` = rychlé hledání **podle jména**, když nevadí, že výsledek může být den starý.
+> `find` = když potřebuju **aktuální** výsledek, hledat podle **jiných vlastností** nebo s nalezenými soubory **něco udělat**.
 
 ## 3.5 `whereis` – program, man stránky a zdrojáky
 
