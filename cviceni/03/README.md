@@ -227,6 +227,35 @@ stat novy.txt               # všechny 3 časy: Access, Modify, Change
 
 > ⚠️ Slidy uvádí `-c` jako „atribut" – ve skutečnosti `-c` = **nevytvářet** soubor. Čas změny atributů (*ctime*) `touch` přímo nastavit neumí.
 
+### K čemu je `touch` dobrý?
+
+| Použití | Příklad | Proč |
+|---|---|---|
+| **Rychle vytvořit prázdný soubor** | `touch poznamky.txt` | nejrychlejší způsob, bez otevírání editoru |
+| **Víc souborů najednou** | `touch a.txt b.txt c.txt`, `touch soubor{1..10}.txt` | testovací data pro cvičení s globbingem, `cp`, `rm`, `find` |
+| **Připravit soubor, do kterého bude něco zapisovat** | `touch /var/log/moje_app.log` | některé programy vyžadují, aby log soubor už existoval |
+| **„Značka" (flag / lock soubor)** | `touch ~/.zaloha_hotova` | skript pak jen testuje, jestli soubor existuje (`[ -f ~/.zaloha_hotova ]`) |
+| **Označit soubor jako změněný** | `touch main.c` | nástroje jako `make` nebo zálohovací programy rozhodují podle času změny – touch je „přinutí" soubor znovu zpracovat |
+| **Nastavit konkrétní datum** | `touch -t 202001011200 stary.txt` | testování – např. ověření, že `find -mtime +30` najde „staré" soubory |
+| **Referenční čas** | `touch -t 202610080800 /tmp/ref` + `find ~ -newer /tmp/ref` | najde vše změněné **po** daném okamžiku |
+| **Zkopírovat čas z jiného souboru** | `touch -r original.txt kopie.txt` | kopie bude mít stejné datum jako originál |
+
+```bash
+cd ~/cv03
+touch soubor{1..5}.txt            # 5 prázdných souborů najednou
+ls soubor*
+
+touch -t 202001011200 soubor1.txt # "zestárnu" jeden soubor
+find . -name 'soubor*' -mtime +30 # find ho najde jako starší než 30 dní
+
+touch /tmp/ref                    # referenční bod "teď"
+sleep 1
+touch soubor3.txt                 # změním jiný soubor
+find . -newer /tmp/ref            # najde jen ./soubor3.txt
+
+rm soubor*.txt /tmp/ref           # úklid
+```
+
 ## 2.4 `cp` – kopírování
 
 ```
