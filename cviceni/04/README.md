@@ -568,7 +568,64 @@ grep -r 'Linux' .                   # rekurzivně, adresáře projde
 grep -h 'Linux' ./*  2>/dev/null    # -h: bez jmen souborů
 ```
 
-> 🌐 Na procvičení: [regexone.com](https://regexone.com) (interaktivní lekce), [regex101.com](https://regex101.com) (testování a vysvětlení vzoru).
+## 2.7 Zkoušení regexů online – regex101
+
+[**regex101.com**](https://regex101.com) je online „pískoviště" na regulární výrazy: napíšeš vzor, vložíš text
+a **hned vidíš, co se našlo**. Vpravo navíc **vysvětlí každou část vzoru** (*Explanation*) – ideální,
+když nevíš, proč vzor nefunguje.
+
+### Jak ho nastavit, aby se choval jako `grep`
+
+1. Vlevo v **FLAVOR** zvol **PCRE2** (výchozí).
+2. Vpravo vedle pole na vzor klikni na **flags** a zapni **`g`** (*global*) a **`m`** (*multi line*).
+   - `m` je důležité: `grep` pracuje **po řádcích**, takže `^` a `$` znamenají začátek/konec **řádku**.
+     Bez `m` by v regex101 znamenaly začátek/konec **celého textu**.
+   - Pro `grep -i` zapni navíc **`i`**.
+3. Do **REGULAR EXPRESSION** napiš vzor **bez uvozovek** (`^root`, ne `'^root'`).
+4. Do **TEST STRING** vlož obsah souboru – v NDG si ho vypiš přes `cat soubor` a zkopíruj.
+5. Shody se podbarví, vpravo uvidíš **Explanation** a **Match Information**.
+
+```
+grep -E -i '^(a|b) is'  alpha.txt
+            └───┬────┘
+   regex101:  ^(a|b) is      flags: g m i
+```
+
+### Liší se regex101 od `grep`?
+
+Princip je stejný, ale regex101 **nemá režim pro `grep`** (POSIX BRE/ERE). Nejbližší je PCRE2, který
+se chová skoro jako **`grep -E`** – s pár rozdíly:
+
+| | `grep` (základní) | `grep -E` | regex101 (PCRE2) |
+|---|---|---|---|
+| `+ ? { } ( ) \|` | ❌ jen jako `\+ \? \{ \} \( \) \|` | ✅ | ✅ – stejně jako `-E` |
+| `^ $` po řádcích | ✅ vždy | ✅ vždy | jen se zapnutým flagem **`m`** |
+| velikost písmen | `-i` | `-i` | flag **`i`** |
+| `\d` (číslice), `\s`, `\w` | ❌ `\d` nefunguje → `[0-9]` | ❌ `\d` nefunguje → `[0-9]` | ✅ |
+| `[[:digit:]]`, `[[:upper:]]` | ✅ | ✅ | ✅ |
+| `\b` hranice slova | ✅ | ✅ | ✅ |
+| lookahead `(?=…)`, líné `*?` | ❌ | ❌ | ✅ (ale v grepu nefunguje!) |
+
+> ⚠️ **Hlavní past:** co funguje v regex101, nemusí fungovat v `grep`. Používej jen operátory z této
+> kapitoly (`. [ ] ^ $ * + ? { } ( ) |`, `\b`) a **`[0-9]` místo `\d`** – pak se vzor chová v obou stejně.
+> V terminálu pak pro `+ ? { } ( ) |` nezapomeň na **`grep -E`**.
+>
+> (Pro úplnost: `grep -P` používá Perl regexy jako regex101 a `\d` umí – ale to už je mimo rozsah kurzu.)
+
+### Vyzkoušej
+
+V NDG vypiš `cat ~/cv04/red.txt`, zkopíruj výstup do regex101 (flags `g m`) a zkoušej:
+
+| Vzor | Co najde |
+|---|---|
+| `r..f` | `reef`, `roof` |
+| `e+` | každou skupinu `e` |
+| `^re*d$` | celé řádky `rd`, `red`, `reed`, `reeed`… |
+| `e{2,}` | dvě a víc `e` za sebou |
+
+Pak stejný vzor ověř v terminálu: `grep -E 'e{2,}' red.txt`.
+
+> 🌐 Další procvičování: [regexone.com](https://regexone.com) – interaktivní lekce krok za krokem (anglicky).
 
 ---
 
