@@ -807,6 +807,60 @@ cat vi_test.txt
 cat vi_zaloha.txt
 ```
 
+## 3.7 Jednodušší alternativa – `nano`
+
+**`nano`** je jednoduchý textový editor **bez režimů** – po otevření rovnou píšeš, jako v Poznámkovém bloku.
+Ovládá se zkratkami s `Ctrl`, které má **vypsané dole na obrazovce** (`^` = `Ctrl`, `M-` = `Alt`).
+
+| | `vi` / `vim` | `nano` |
+|---|---|---|
+| dostupnost | **všude**, i na minimálních serverech | většinou, ale ne vždy |
+| ovládání | režimy, nutno se naučit | intuitivní, nápověda na obrazovce |
+| síla | velmi silný (makra, regexy, pluginy) | základní editace |
+| vhodné pro | admini, programátoři, cokoliv | rychlá úprava konfiguráku, začátečníci |
+
+> Proto se v Linux Essentials učí **vi** – na serveru máš jistotu, že tam bude. `nano` je pohodlnější na drobné úpravy.
+
+| Zkratka | Akce |
+|---|---|
+| `Ctrl+O` | **uložit** (*Write Out*) – potvrď jméno Enterem |
+| `Ctrl+X` | **ukončit** (když jsou neuložené změny, zeptá se: `Y` / `N`) |
+| `Ctrl+K` | **vyjmout** řádek |
+| `Ctrl+U` | **vložit** vyjmutý řádek |
+| `Ctrl+W` | **hledat** (*Where is*) |
+| `Ctrl+\` | hledat a **nahradit** |
+| `Ctrl+_` | skok na číslo řádku |
+| `Alt+U` | zpět (*undo*) |
+| `Ctrl+G` | nápověda |
+
+### Malý příklad
+
+```bash
+cd ~/cv04
+nano nakup.txt
+```
+
+1. Napiš rovnou (žádné `i` není potřeba):
+   ```
+   mleko
+   chleba
+   maslo
+   ```
+2. `Ctrl+O`, `Enter` → uloženo (dole se ukáže `[ Wrote 3 lines ]`).
+3. Šipkou na řádek `chleba`, `Ctrl+K` → řádek vyjmut.
+4. Šipkou na konec souboru, `Ctrl+U` → řádek vložen na konec.
+5. `Ctrl+W`, napiš `maslo`, `Enter` → kurzor skočí na slovo.
+6. `Ctrl+X` → zeptá se *Save modified buffer?* → `Y`, `Enter` → uloženo a ukončeno.
+
+```bash
+cat nakup.txt
+# mleko
+# maslo
+# chleba
+```
+
+> Pokud `nano` v labu není (`command not found`), použij `vi` – NDG lab nemá internet, takže ho nedoinstaluješ.
+
 ---
 
 # 4. Standard Text Streams and Redirection
