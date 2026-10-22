@@ -641,8 +641,13 @@ Proč ho umět:
 
 ```bash
 vi soubor.txt             # otevře (nebo vytvoří) soubor
-vimtutor                  # interaktivní výuka vim (~30 min) – pokud je nainstalovaný
 ```
+
+> 💡 Interaktivní výuka `vimtutor` v NDG labu **není nainstalovaná** (a bez internetu ji nedoinstaluješ).
+> Na procvičení mimo lab:
+> - [openvim.com](https://www.openvim.com) – interaktivní tutoriál přímo v prohlížeči,
+> - [vim-adventures.com](https://vim-adventures.com) – hra, kde se pohybuješ klávesami `hjkl` (první úrovně zdarma),
+> - na vlastním Linuxu / macOS / v Git Bash na Windows: příkaz `vimtutor`.
 
 ## 3.1 Tři režimy
 
