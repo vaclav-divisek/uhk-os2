@@ -735,6 +735,28 @@ vi soubor.txt             # otevře (nebo vytvoří) soubor
 
 Z vkládacího režimu zpět: **`Esc`**.
 
+### Mazání ve vkládacím režimu
+
+| Klávesa | Co smaže |
+|---|---|
+| `Backspace` | znak **před** kurzorem |
+| `Delete` | znak **pod** kurzorem |
+| `Ctrl+W` | slovo před kurzorem |
+| `Ctrl+U` | vše od začátku řádku po kurzor |
+
+> ⚠️ **Když Backspace „nemaže"** (kurzor se posouvá, ale text zůstává, nebo nejde přes začátek řádku):
+> `vi` běží v režimu kompatibility se starým vi a Backspace smí mazat jen text napsaný **od posledního vstupu
+> do vkládacího režimu**. Oprava:
+>
+> ```
+> Esc
+> :set backspace=indent,eol,start
+> ```
+>
+> (nebo `:set nocompatible`). Trvale: `echo 'set backspace=indent,eol,start' >> ~/.vimrc`
+>
+> Alternativa: `Esc` → v příkazovém režimu `x` (smaže znak pod kurzorem) / `X` (znak před kurzorem) → `i` zpět psát.
+
 ## 3.5 Ex režim – ukládání a ukončení
 
 | Příkaz | Význam |
