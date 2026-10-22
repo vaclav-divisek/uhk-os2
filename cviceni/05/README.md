@@ -57,6 +57,60 @@ Skripty ale umí víc než jen sled příkazů – mají **proměnné, podmínky
 
 Typické použití: zálohy, reporty, hromadné operace se soubory, automatizace správy systému.
 
+### V jakém jazyce se skripty píšou?
+
+V **jazyce shellu** – u nás **Bash**. Ten se skládá ze dvou částí:
+
+- **příkazy, které znáš z terminálu** (`ls`, `cp`, `grep`, `tar`…) – skript je hlavně volá,
+- **syntaxe shellu** – proměnné, `if` / `then` / `fi`, `for`, `while`, `read`, `$( )`, `$?`, `exit`.
+
+> Co napíšeš do terminálu, můžeš dát do skriptu – a naopak. Bash je **příkazový interpret i skriptovací jazyk zároveň**.
+
+**Jakým jazykem se skript provede, určuje první řádek** (*shebang*, viz dále):
+
+| Shebang | Jazyk / interpret | Přípona (jen zvyk) |
+|---|---|---|
+| `#!/bin/bash` | **Bash** – to, co děláme na cvičení | `.sh` |
+| `#!/bin/sh` | POSIX shell (na Ubuntu `dash`) – jen základní syntaxe | `.sh` |
+| `#!/usr/bin/python3` | Python | `.py` |
+| `#!/usr/bin/perl` | Perl | `.pl` |
+
+> **Přípona `.sh` je jen konvence** – Linux podle ní nic nepozná. Rozhoduje shebang a právo spuštění (`x`).
+>
+> **Bash** se hodí na automatizaci příkazů. Na složitější logiku, výpočty nebo práci s daty (JSON, CSV, síť)
+> je lepší **Python** apod.
+
+### Podobnost s PHP
+
+Kdo zná PHP, uvidí hodně podobného (`$promenna`, `echo`, `"…"` vs. `'…'`), ale v detailech se jazyky liší –
+a právě tam vznikají chyby:
+
+| | PHP | Bash |
+|---|---|---|
+| proměnná – přiřazení | `$jmeno = "Petr";` | `jmeno="Petr"` – **bez `$`, bez mezer kolem `=`** |
+| proměnná – čtení | `$jmeno` | `$jmeno` ✅ stejné |
+| výpis | `echo "Ahoj $jmeno";` | `echo "Ahoj $jmeno"` ✅ skoro stejné |
+| `"…"` vs. `'…'` | v `"…"` se proměnné rozbalí, v `'…'` ne | ✅ **stejné** |
+| středník | povinný | nepovinný (jen pro víc příkazů na řádku) |
+| podmínka | `if ($a == 5) { … } elseif (…) { … } else { … }` | `if [ $a -eq 5 ]; then … elif …; then … else … fi` |
+| porovnání čísel | `==`, `<`, `>` | `-eq`, `-lt`, `-gt` (`<` `>` jsou přesměrování!) |
+| bloky | `{ }` | `then … fi`, `do … done` |
+| datové typy | int, string, array, bool… | **všechno je text** (počítání jen v `$(( ))`) |
+| spojení řetězců | `$a . $b` | `"$a$b"` – stačí napsat vedle sebe |
+| co se volá | vestavěné funkce (`strlen()`, `date()`) | hlavně **externí programy** (`date`, `wc`, `grep`) |
+| typické použití | webové stránky, backend | automatizace systému, správa serverů |
+
+Nejčastější chyby „po PHPčkovsku":
+
+```bash
+$jmeno = "Petr"      # ❌ bash se pokusí spustit příkaz s názvem obsahu $jmeno
+jmeno = "Petr"       # ❌ mezery → bash hledá příkaz "jmeno"
+jmeno="Petr"         # ✅
+
+if [ $a == 5 ]       # funguje, ale porovnává jako TEXT ("05" ≠ "5")
+if [ $a -eq 5 ]      # ✅ porovnání čísel
+```
+
 ## 2.2 Vytvoření a spuštění skriptu
 
 **3 kroky:**
